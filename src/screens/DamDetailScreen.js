@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet, Linking,
 } from 'react-native';
@@ -104,6 +104,15 @@ export default function DamDetailScreen({ route, navigation }) {
         </Section>
       )}
 
+      {/* Resorts */}
+      {dam.resorts?.length > 0 && (
+        <Section title={`RESORTS & ACCOMMODATION  ·  ${dam.resorts.length}`}>
+          {dam.resorts.map((resort) => (
+            <ResortCard key={resort.id} resort={resort} />
+          ))}
+        </Section>
+      )}
+
       {/* Ask Advisor */}
       <TouchableOpacity
         style={styles.advisorBtn}
@@ -149,6 +158,68 @@ function SafetyRow({ label, present, warningText }) {
           <Text style={styles.safePillText}>Clear</Text>
         </View>
       )}
+    </View>
+  );
+}
+
+function ResortCard({ resort }) {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <View style={styles.resortCard}>
+      <TouchableOpacity onPress={() => setExpanded(v => !v)} activeOpacity={0.8}>
+        <View style={styles.resortHeader}>
+          <Text style={styles.resortName}>{resort.name}</Text>
+          <Text style={styles.resortChevron}>{expanded ? '▲' : '▼'}</Text>
+        </View>
+        {resort.priceFrom ? (
+          <Text style={styles.resortPrice}>{resort.priceFrom}</Text>
+        ) : null}
+      </TouchableOpacity>
+
+      {expanded && (
+        <View style={styles.resortBody}>
+          {resort.description ? (
+            <Text style={styles.resortDesc}>{resort.description}</Text>
+          ) : null}
+          {resort.accommodationTypes ? (
+            <ResortRow label="Accommodation" value={resort.accommodationTypes} />
+          ) : null}
+          {resort.fishingAccess ? (
+            <ResortRow label="Fishing access" value={resort.fishingAccess} />
+          ) : null}
+          {resort.facilities ? (
+            <ResortRow label="Facilities" value={resort.facilities} />
+          ) : null}
+          <View style={styles.resortActions}>
+            {resort.websiteUrl ? (
+              <TouchableOpacity
+                style={styles.resortBtn}
+                onPress={() => Linking.openURL(resort.websiteUrl)}
+              >
+                <Text style={styles.resortBtnText}>Visit Website</Text>
+              </TouchableOpacity>
+            ) : null}
+            {resort.phoneNumber ? (
+              <TouchableOpacity
+                style={[styles.resortBtn, styles.resortBtnOutline]}
+                onPress={() => Linking.openURL(`tel:${resort.phoneNumber}`)}
+              >
+                <Text style={styles.resortBtnOutlineText}>Call</Text>
+              </TouchableOpacity>
+            ) : null}
+          </View>
+        </View>
+      )}
+    </View>
+  );
+}
+
+function ResortRow({ label, value }) {
+  if (!value) return null;
+  return (
+    <View style={styles.resortRow}>
+      <Text style={styles.resortRowLabel}>{label}</Text>
+      <Text style={styles.resortRowValue}>{value}</Text>
     </View>
   );
 }
@@ -265,4 +336,39 @@ const styles = StyleSheet.create({
     alignItems: 'center', marginTop: 6,
   },
   advisorBtnText: { color: '#fff', fontSize: 16, fontWeight: '700', letterSpacing: 0.3 },
+
+  resortCard: {
+    backgroundColor: colors.surfaceRaised,
+    borderRadius: 12, marginBottom: 8,
+    borderWidth: 1, borderColor: colors.border,
+    overflow: 'hidden',
+  },
+  resortHeader: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    padding: 14,
+  },
+  resortName: { fontSize: 14, fontWeight: '700', color: colors.textPrimary, flex: 1, marginRight: 8 },
+  resortChevron: { color: colors.primary, fontSize: 12 },
+  resortPrice: {
+    color: colors.primary, fontSize: 12, fontWeight: '600',
+    paddingHorizontal: 14, paddingBottom: 10,
+  },
+  resortBody: {
+    borderTopWidth: 1, borderTopColor: colors.border, padding: 14, paddingTop: 12,
+  },
+  resortDesc: { color: colors.textSecondary, fontSize: 13, lineHeight: 20, marginBottom: 12 },
+  resortRow: { marginBottom: 8 },
+  resortRowLabel: {
+    fontSize: 10, fontWeight: '700', color: colors.primary,
+    letterSpacing: 0.8, marginBottom: 2,
+  },
+  resortRowValue: { color: colors.textSecondary, fontSize: 13, lineHeight: 18 },
+  resortActions: { flexDirection: 'row', gap: 8, marginTop: 12 },
+  resortBtn: {
+    backgroundColor: colors.primary, borderRadius: 8,
+    paddingHorizontal: 18, paddingVertical: 8,
+  },
+  resortBtnText: { color: '#fff', fontSize: 13, fontWeight: '700' },
+  resortBtnOutline: { backgroundColor: 'transparent', borderWidth: 1, borderColor: colors.primary },
+  resortBtnOutlineText: { color: colors.primary, fontSize: 13, fontWeight: '700' },
 });
