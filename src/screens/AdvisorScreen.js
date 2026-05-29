@@ -60,7 +60,7 @@ export default function AdvisorScreen({ route }) {
         {!isUser && (
           <Text style={styles.bubbleLabel}>{isError ? 'Error' : 'SA FishFind Advisor'}</Text>
         )}
-        <Text style={[styles.bubbleText, isError && styles.bubbleError]}>{item.text}</Text>
+        <Text style={[styles.bubbleText, isUser && styles.bubbleUserText, isError && styles.bubbleError]}>{item.text}</Text>
       </View>
     );
   };
@@ -228,7 +228,8 @@ const styles = StyleSheet.create({
 
   chatList: { padding: 16, paddingBottom: 8 },
   bubble: { borderRadius: 16, padding: 14, marginBottom: 10, maxWidth: '85%' },
-  bubbleUser: { backgroundColor: colors.primary, alignSelf: 'flex-end' },
+  bubbleUser: { backgroundColor: colors.primary, alignSelf: 'flex-end', borderWidth: 0 },
+  bubbleUserText: { color: '#FFFFFF' },
   bubbleAdvisor: {
     backgroundColor: colors.surface, alignSelf: 'flex-start',
     borderWidth: 1, borderColor: colors.border,

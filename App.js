@@ -18,9 +18,10 @@ const AdvisorStack = createNativeStackNavigator();
 
 const screenOptions = {
   headerStyle: { backgroundColor: colors.surface },
-  headerTintColor: colors.textPrimary,
-  headerTitleStyle: { fontWeight: '700', fontSize: 17 },
+  headerTintColor: colors.primary,
+  headerTitleStyle: { fontWeight: '700', fontSize: 17, color: colors.textPrimary },
   headerShadowVisible: false,
+  headerBackTitleVisible: false,
   contentStyle: { backgroundColor: colors.bg },
 };
 
