@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, StyleSheet, Linking,
+  View, Text, ScrollView, TouchableOpacity, StyleSheet, Linking, Image,
 } from 'react-native';
 import { colors, activityColor, activityBg } from '../theme';
 
@@ -9,6 +9,13 @@ export default function DamDetailScreen({ route, navigation }) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+
+      {/* Hero image */}
+      {dam.imageUrl ? (
+        <Image source={{ uri: dam.imageUrl }} style={styles.heroImage} />
+      ) : (
+        <View style={styles.heroPlaceholder} />
+      )}
 
       {/* Header */}
       <View style={styles.header}>
@@ -236,9 +243,22 @@ function SpeciesRow({ label, value }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
-  content: { padding: 16, paddingBottom: 40 },
+  content: { paddingBottom: 40 },
+
+  heroImage: {
+    width: '100%',
+    height: 210,
+    resizeMode: 'cover',
+  },
+  heroPlaceholder: {
+    width: '100%',
+    height: 6,
+    backgroundColor: colors.primary,
+  },
 
   header: {
+    margin: 16,
+    marginBottom: 10,
     backgroundColor: colors.surface,
     borderRadius: 16,
     padding: 18,
@@ -260,6 +280,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: 16,
     padding: 16,
+    marginHorizontal: 16,
     marginBottom: 10,
     borderWidth: 1,
     borderColor: colors.border,
@@ -334,6 +355,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     borderRadius: 14, padding: 18,
     alignItems: 'center', marginTop: 6,
+    marginHorizontal: 16,
   },
   advisorBtnText: { color: '#fff', fontSize: 16, fontWeight: '700', letterSpacing: 0.3 },
 

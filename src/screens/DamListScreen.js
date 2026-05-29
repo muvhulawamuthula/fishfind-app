@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity, StyleSheet,
-  ActivityIndicator, TextInput, RefreshControl,
+  ActivityIndicator, TextInput, RefreshControl, Image,
 } from 'react-native';
 import { getDams, getDamsWithChalets, getDamsWithCamping } from '../api/client';
 import { colors, activityColor, activityBg } from '../theme';
@@ -51,6 +51,13 @@ export default function DamListScreen({ navigation }) {
       onPress={() => navigation.navigate('DamDetail', { dam: item })}
       activeOpacity={0.7}
     >
+      {item.imageUrl ? (
+        <Image source={{ uri: item.imageUrl }} style={styles.cardImage} />
+      ) : (
+        <View style={styles.cardImagePlaceholder} />
+      )}
+
+      <View style={styles.cardBody}>
       <View style={styles.cardHeader}>
         <Text style={styles.damName}>{item.name}</Text>
         <View style={[styles.activityBadge, { backgroundColor: activityBg(item.activityLevel) }]}>
@@ -84,6 +91,7 @@ export default function DamListScreen({ navigation }) {
           {item.bilharziaRisk    && <View style={styles.warnChip}><Text style={styles.warnText}>Bilharzia</Text></View>}
         </View>
       )}
+      </View>
     </TouchableOpacity>
   );
 
@@ -178,10 +186,24 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
     borderRadius: 16,
-    padding: 16,
     marginBottom: 10,
     borderWidth: 1,
     borderColor: colors.border,
+    overflow: 'hidden',
+  },
+  cardImage: {
+    width: '100%',
+    height: 130,
+    resizeMode: 'cover',
+  },
+  cardImagePlaceholder: {
+    width: '100%',
+    height: 6,
+    backgroundColor: colors.primary,
+    opacity: 0.3,
+  },
+  cardBody: {
+    padding: 14,
     borderLeftWidth: 3,
     borderLeftColor: colors.primary,
   },

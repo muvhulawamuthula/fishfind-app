@@ -1,15 +1,17 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { ImageBackground, StyleSheet, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Text } from 'react-native';
 
 import DamListScreen from './src/screens/DamListScreen';
 import DamDetailScreen from './src/screens/DamDetailScreen';
 import NearbyScreen from './src/screens/NearbyScreen';
 import AdvisorScreen from './src/screens/AdvisorScreen';
 import { colors } from './src/theme';
+
+const CARP_BG = 'https://upload.wikimedia.org/wikipedia/commons/6/69/Silhouette_8_%28carpe%29.svg';
 
 const Tab = createBottomTabNavigator();
 const DamsStack = createNativeStackNavigator();
@@ -22,7 +24,7 @@ const screenOptions = {
   headerTitleStyle: { fontWeight: '700', fontSize: 17, color: colors.textPrimary },
   headerShadowVisible: false,
   headerBackTitleVisible: false,
-  contentStyle: { backgroundColor: colors.bg },
+  contentStyle: { backgroundColor: 'transparent' },
 };
 
 function DamsNavigator() {
@@ -55,37 +57,52 @@ function AdvisorNavigator() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <StatusBar style="light" />
-      <Tab.Navigator
-        screenOptions={{
-          headerShown: false,
-          tabBarStyle: {
-            backgroundColor: colors.tabBar,
-            borderTopWidth: 1,
-            borderTopColor: colors.tabBorder,
-          },
-          tabBarActiveTintColor: colors.primary,
-          tabBarInactiveTintColor: colors.textMuted,
-          tabBarLabelStyle: { fontSize: 11, fontWeight: '600', marginBottom: 2 },
-        }}
-      >
-        <Tab.Screen
-          name="Dams"
-          component={DamsNavigator}
-          options={{ tabBarIcon: () => <Text style={{ fontSize: 18 }}>🎣</Text> }}
-        />
-        <Tab.Screen
-          name="Nearby"
-          component={NearbyNavigator}
-          options={{ tabBarIcon: () => <Text style={{ fontSize: 18 }}>📍</Text> }}
-        />
-        <Tab.Screen
-          name="Advisor"
-          component={AdvisorNavigator}
-          options={{ tabBarIcon: () => <Text style={{ fontSize: 18 }}>🤖</Text> }}
-        />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <ImageBackground
+      source={{ uri: CARP_BG }}
+      style={styles.root}
+      imageStyle={styles.carpBg}
+    >
+      <StatusBar style="dark" />
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={{
+            headerShown: false,
+            tabBarStyle: {
+              backgroundColor: colors.tabBar,
+              borderTopWidth: 1,
+              borderTopColor: colors.tabBorder,
+            },
+            tabBarActiveTintColor: colors.primary,
+            tabBarInactiveTintColor: colors.textMuted,
+            tabBarLabelStyle: { fontSize: 11, fontWeight: '600', marginBottom: 2 },
+          }}
+        >
+          <Tab.Screen
+            name="Dams"
+            component={DamsNavigator}
+            options={{ tabBarIcon: () => <Text style={{ fontSize: 18 }}>🎣</Text> }}
+          />
+          <Tab.Screen
+            name="Nearby"
+            component={NearbyNavigator}
+            options={{ tabBarIcon: () => <Text style={{ fontSize: 18 }}>📍</Text> }}
+          />
+          <Tab.Screen
+            name="Advisor"
+            component={AdvisorNavigator}
+            options={{ tabBarIcon: () => <Text style={{ fontSize: 18 }}>🤖</Text> }}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </ImageBackground>
   );
 }
+
+const styles = StyleSheet.create({
+  root: { flex: 1, backgroundColor: colors.bg },
+  carpBg: {
+    opacity: 0.06,
+    resizeMode: 'contain',
+    tintColor: colors.primary,
+  },
+});
