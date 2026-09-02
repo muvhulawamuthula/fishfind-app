@@ -1,99 +1,64 @@
 # SA FishFind — Mobile & Web App
-### Gauteng fishing guide — React Native + Web frontend
 
-> **Backend API:** [github.com/muvhulawamuthula/sa-fishfind](https://github.com/muvhulawamuthula/sa-fishfind)
+Expo (React Native + web) client for the Gauteng fishing guide. Browse dams, search by GPS proximity, and chat with an AI fishing advisor. Talks to the [sa-fishfind](https://github.com/muvhulawamuthula/sa-fishfind) Spring Boot API.
 
----
+## Features
 
-## Screens
+| Area | What it does |
+|------|----------------|
+| **Dams** | Searchable list with All / Chalets / Camping filters; opens full dam detail |
+| **Dam detail** | Times, fees, species (bait/rig/technique), bait shops, safety, CTA into AI advisor |
+| **Nearby** | expo-location proximity search with 25 / 50 / 100 km radius; results sorted by distance |
+| **AI Advisor** | Chat UI posting to `POST /api/v1/advisor/ask` with dam context and suggestion chips |
 
-| Screen | Description |
-|--------|-------------|
-| **Dam List** | Browse all 5 Gauteng dams — search, filter by chalets/camping, activity badges, safety warnings |
-| **Dam Detail** | Full info — fishing times, entry fees, fish species with bait/rig/technique, nearby bait shops with call & directions |
-| **Nearby** | GPS-based proximity search with 25/50/100 km radius picker, results sorted by distance |
-| **AI Advisor** | Claude-powered chat — ask anything about a dam, pre-populated from Dam Detail or pick from the dam selector |
+Dam inventory and advisor behaviour come from the backend. This app does not hardcode the dam catalogue.
 
----
+## Stack
 
-## Tech stack
+- Expo ~56 / React Native 0.85 / React 19
+- React Navigation (bottom tabs + native stacks)
+- expo-location
+- Fetch client (`src/api/client.js`)
+- StyleSheet theme
+- MIT
 
-| | |
-|--|--|
-| Framework | Expo SDK (React Native + Web) |
-| Language | JavaScript |
-| Navigation | React Navigation — bottom tabs + native stack |
-| Styling | Plain `StyleSheet` — purple/white dark design system |
-| Location | `expo-location` |
-| API | Fetch → Spring Boot backend on `:8080` |
+## Quick start
 
----
-
-## Running locally
-
-**Prerequisites:** Node 18+, Expo CLI, the [SA FishFind backend](https://github.com/muvhulawamuthula/sa-fishfind) running on `:8080`
+Node 18+ and [sa-fishfind](https://github.com/muvhulawamuthula/sa-fishfind) running on `:8080`.
 
 ```bash
 git clone https://github.com/muvhulawamuthula/fishfind-app.git
 cd fishfind-app
 npm install
-
 npx expo start
 ```
 
-| Platform | Command |
-|----------|---------|
-| Web | Press `w` — opens at `http://localhost:8081` |
-| Android emulator | Press `a` |
-| iOS simulator | Press `i` (macOS only) |
-| Physical device | Scan QR code with Expo Go |
+See [docs/getting-started.md](docs/getting-started.md) for platform notes and troubleshooting.
 
-> **Android emulator:** Change `localhost` to `10.0.2.2` in `src/api/client.js`
+## API surface used
 
-> **Physical device:** Change `localhost` to your machine's LAN IP in `src/api/client.js`
+`BASE_URL` defaults to `http://localhost:8080/api/v1`.
 
----
+| Client helper | Backend |
+|---------------|---------|
+| `getDams` | `GET /dams` |
+| `getDamById` | `GET /dams/{id}` |
+| `getDamsNearby` | `GET /dams/nearby?lat&lng&radius` |
+| `getDamsWithChalets` / `getDamsWithCamping` | `GET /dams/filter/chalets` / `camping` |
+| `askAdvisor` | `POST /advisor/ask` `{ damId, question }` |
 
-## Project structure
+More detail: [docs/architecture.md](docs/architecture.md).
+
+## Layout
 
 ```
-src/
-├── api/
-│   └── client.js          — Fetch wrapper for all backend endpoints
-├── screens/
-│   ├── DamListScreen.js   — List with search + All/Chalets/Camping filter
-│   ├── DamDetailScreen.js — Full dam detail, species, bait shops, advisor CTA
-│   ├── NearbyScreen.js    — GPS search with radius picker
-│   └── AdvisorScreen.js   — AI chat with dam picker + suggestion chips
-└── theme.js               — Color tokens + activityColor/activityBg helpers
-App.js                     — Tab + stack navigation setup
+App.js                 # tab + stack navigators
+src/api/client.js      # fetch wrapper
+src/screens/           # DamList, DamDetail, Nearby, Advisor
+src/theme.js           # color tokens + activity helpers
+app.json               # Expo config, location permissions
 ```
 
----
+## Status
 
-## Design system
-
-Dark purple theme — key tokens from `src/theme.js`:
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| `bg` | `#0D0B1A` | Screen backgrounds |
-| `surface` | `#141128` | Cards |
-| `primary` | `#8B5CF6` | Buttons, accents, active states |
-| `textPrimary` | `#FFFFFF` | Headings, values |
-| `textSecondary` | `#C4B5FD` | Labels, secondary info |
-| `success` | `#34D399` | HIGH activity, safety clear |
-| `danger` | `#F87171` | Warnings, safety hazards |
-
----
-
-## Roadmap
-
-- [x] Dam list with search and amenity filters
-- [x] Full dam detail — species, bait shops, safety
-- [x] GPS nearby search
-- [x] AI fishing advisor (Claude-powered)
-- [ ] User accounts + favourite dams
-- [ ] Fishing log / catch journal
-- [ ] Push notifications for fishing conditions
-- [ ] Community catches + photos
+Shipped for local/demo use against sa-fishfind. Not yet: accounts, favourites, catch log, push, or community features.
